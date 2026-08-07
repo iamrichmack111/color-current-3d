@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#042b46" />
+  <title>Color Current 3D</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="gameCanvas" aria-label="Color Current 3D game"></canvas>
+
+  <section id="startScreen" class="screen active">
+    <div class="card hero-card">
+      <div class="eyebrow">RICHMACK GAMES</div>
+      <h1>COLOR CURRENT <span>3D</span></h1>
+      <p>Swim through the reef, catch fish, and spell each fish's color.</p>
+      <div class="rules-grid">
+        <div><strong>+10 coins</strong><small>for every correct color</small></div>
+        <div><strong>50 coins</strong><small>to grow and eat bigger fish</small></div>
+        <div><strong>4 upgrades</strong><small>from tiny swimmer to reef giant</small></div>
+      </div>
+      <label class="name-label" for="playerName">Swimmer name</label>
+      <input id="playerName" maxlength="16" placeholder="Enter your name" value="Player" autocomplete="off" />
+      <button id="startButton" class="primary-button">DIVE IN</button>
+      <p class="controls-copy">WASD / Arrow keys = swim · Space = rise · Shift = dive · P = pause</p>
+    </div>
+  </section>
+
+  <header id="hud" class="hidden" aria-live="polite">
+    <div class="hud-chip player-chip">
+      <span id="hudName">Player</span>
+      <small id="rankText">Tiny Swimmer</small>
+    </div>
+    <div class="hud-chip coin-chip">
+      <span class="coin-icon">●</span>
+      <strong id="coinText">0</strong>
+      <small>COINS</small>
+    </div>
+    <div class="hud-chip">
+      <strong id="fishText">0</strong>
+      <small>FISH</small>
+    </div>
+    <div class="upgrade-panel">
+      <div class="upgrade-row"><span id="upgradeText">Next growth: 50 coins</span><b id="levelText">LV 1</b></div>
+      <div class="meter"><i id="upgradeBar"></i></div>
+    </div>
+  </header>
+
+  <aside id="missionPanel" class="hidden">
+    <strong>MISSION</strong>
+    <span id="missionText">Catch a small fish</span>
+  </aside>
+
+  <div id="messageToast" role="status"></div>
+
+  <section id="quizOverlay" class="overlay hidden" aria-modal="true" role="dialog">
+    <div class="quiz-card">
+      <div id="fishPreview" class="fish-preview">🐟</div>
+      <div class="quiz-kicker">COLOR CATCH!</div>
+      <h2>Spell this fish's color</h2>
+      <p>Type the color, then press Enter.</p>
+      <input id="colorAnswer" spellcheck="false" autocomplete="off" maxlength="14" placeholder="Type the color" />
+      <button id="submitAnswer" class="primary-button">CHECK ANSWER</button>
+      <div id="quizFeedback"></div>
+    </div>
+  </section>
+
+  <section id="pauseOverlay" class="overlay hidden">
+    <div class="card small-card">
+      <h2>PAUSED</h2>
+      <p>The current is waiting.</p>
+      <button id="resumeButton" class="primary-button">KEEP SWIMMING</button>
+    </div>
+  </section>
+
+  <section id="winOverlay" class="overlay hidden">
+    <div class="card win-card">
+      <div class="trophy">🏆</div>
+      <h2>REEF GIANT!</h2>
+      <p id="winSummary"></p>
+      <button id="playAgainButton" class="primary-button">PLAY AGAIN</button>
+    </div>
+  </section>
+
+  <div id="touchControls" class="hidden" aria-label="Touch controls">
+    <div class="touch-pad">
+      <button data-key="KeyW">▲</button>
+      <button data-key="KeyA">◀</button>
+      <button data-key="KeyS">▼</button>
+      <button data-key="KeyD">▶</button>
+    </div>
+    <div class="touch-depth">
+      <button data-key="Space">RISE</button>
+      <button data-key="ShiftLeft">DIVE</button>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
