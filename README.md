@@ -106,3 +106,7 @@ GitHub Actions performs JavaScript/Python checks, regenerates all Playwright scr
 ## License
 
 Use and adapt according to the repository's license and project requirements.
+
+## Narrated Demo
+
+[▶ Watch the narrated Color Current 3D demo](media/demo/color-current-3d-demo.mp4)
