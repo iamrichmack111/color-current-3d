@@ -1,0 +1,79 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: color-current-3d-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright-gallery:
+    name: Playwright gallery
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user root
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      CI: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -s style.css
+          test -s game.js
+          test -s scripts/capture_screenshots.mjs
+          node --check game.js
+          node --check scripts/capture_screenshots.mjs
+
+      - name: Install Playwright JavaScript package
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1 || true
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+
+      - name: Capture real Playwright documentation gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/capture_screenshots.mjs
+
+      - name: Verify gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in \
+            media/screenshots/01-start-screen.png \
+            media/screenshots/02-live-reef.png \
+            media/screenshots/03-color-catch.png \
+            media/screenshots/04-level-progress.png \
+            media/screenshots/05-reef-giant.png
+          do
+            test -s "$f"
+            bytes="$(wc -c < "$f")"
+            echo "$f -> $bytes bytes"
+            test "$bytes" -ge 10000
+          done
+
+      - name: Upload Playwright screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: color-current-3d-playwright-gallery
+          path: media/screenshots/*.png
+          if-no-files-found: error
+          retention-days: 14
